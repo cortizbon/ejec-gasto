@@ -32,7 +32,16 @@ fig = px.line(piv_f, x='mes', y='PAGOS')
 
 fig.add_hline(y=val, line=dict(color='red', dash='dash'))
 fig.update_layout(yaxis_tickformat='.0f',
-                  title='fEjecución por entidad ({entidad}) y tipo de gasto ({tipo_gasto}) <br><sup>Cifras en miles de millones de pesos</sup>')
+                  title=f'Ejecución por entidad ({entidad}) y tipo de gasto ({tipo_gasto}) <br><sup>Cifras en miles de millones de pesos</sup>')
+st.plotly_chart(fig)
+
+
+piv_f['Porcentaje'] = ((piv_f['PAGOS'] / val) * 100).round(1)
+fig = px.line(piv_f, x='mes', y='Porcentaje')
+
+fig.add_hline(y=val, line=dict(color='red', dash='dash'))
+fig.update_layout(yaxis_tickformat='.0f',
+                  title=f'Ejecución por entidad ({entidad}) y tipo de gasto ({tipo_gasto}) <br><sup>Poncentaje del total</sup>')
 st.plotly_chart(fig)
 
 
