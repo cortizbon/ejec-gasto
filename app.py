@@ -31,7 +31,8 @@ val = df[(df['Tipo de gasto'] == tipo_gasto) & (df['Entidad'] == entidad)].group
 fig = px.line(piv_f, x='mes', y='PAGOS')
 
 fig.add_hline(y=val, line=dict(color='red', dash='dash'))
-fig.update_layout(yaxis_tickformat='.0f')
+fig.update_layout(yaxis_tickformat='.0f',
+                  title='fEjecución por entidad ({entidad}) y tipo de gasto ({tipo_gasto}) <br><sup>Cifras en miles de millones de pesos</sup>')
 st.plotly_chart(fig)
 
 
