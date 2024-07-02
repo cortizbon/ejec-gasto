@@ -28,6 +28,7 @@ tipo_gasto = st.selectbox("Seleccione el tipo de gasto: ", t_ent['Tipo de gasto'
 
 piv_f = t_ent[t_ent['Tipo de gasto'] == tipo_gasto]
 val = df[(df['Tipo de gasto'] == tipo_gasto) & (df['Entidad'] == entidad)].groupby(['mes_num','mes'])['APR. INICIAL'].sum().unique()[0]
+
 fig = px.line(piv_f, x='mes', y='PAGOS')
 
 fig.add_hline(y=val, line=dict(color='red', dash='dash'))
@@ -37,9 +38,10 @@ st.plotly_chart(fig)
 
 
 piv_f['Porcentaje'] = ((piv_f['PAGOS'] / val) * 100).round(1)
+
 fig = px.line(piv_f, x='mes', y='Porcentaje')
 
-fig.add_hline(y=val, line=dict(color='red', dash='dash'))
+fig.add_hline(y=100, line=dict(color='red', dash='dash'))
 fig.update_layout(yaxis_tickformat='.0f',
                   title=f'Ejecución por entidad ({entidad}) y tipo de gasto ({tipo_gasto}) <br><sup>Poncentaje del total</sup>')
 st.plotly_chart(fig)
