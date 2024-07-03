@@ -2,17 +2,20 @@ import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
 import plotly.express as px
+from io import BytesIO
 
 st.title("Ejecución presupuestal | Enero - Mayo")
 
 df = pd.read_csv("ejecucion_enero_mayo.csv")
-df.loc[::, ['APR. INICIAL', 'PAGOS']] = df.loc[::, ['APR. INICIAL', 'PAGOS']] / 1_000_000_000
-rubros = df['DESCRIPCION'].unique().tolist()
-sectores = df['Sector'].unique().tolist()
+
+df2 = df.copy()
+df2.loc[::, ['APR. INICIAL', 'PAGOS']] = df2.loc[::, ['APR. INICIAL', 'PAGOS']] / 1_000_000_000
+rubros = df2['DESCRIPCION'].unique().tolist()
+sectores = df2['Sector'].unique().tolist()
 
 sector = st.selectbox("Seleccione el sector: ", sectores)
 
-fil = df[df['Sector'] == sector]
+fil = df2[df2['Sector'] == sector]
 entidades = fil['Entidad'].unique().tolist()
 
 entidad = st.selectbox("Seleccione la entidad: ", entidades)
@@ -27,8 +30,11 @@ t_ent = (fil[fil['Entidad'] == entidad]
 tipo_gasto = st.selectbox("Seleccione el tipo de gasto: ", t_ent['Tipo de gasto'].unique().tolist())
 
 piv_f = t_ent[t_ent['Tipo de gasto'] == tipo_gasto]
-val = df[(df['Tipo de gasto'] == tipo_gasto) & (df['Entidad'] == entidad)].groupby(['mes_num','mes'])['APR. INICIAL'].sum().unique()[0]
-
+val = (df2[(df2['Tipo de gasto'] == tipo_gasto) & (df2['Entidad'] == entidad)]
+       .groupby(['mes_num','mes'])['APR. INICIAL']
+       .sum()
+       .unique()[0]
+)
 fig = px.line(piv_f, x='mes', y='PAGOS')
 
 fig.add_hline(y=val, line=dict(color='red', dash='dash'))
@@ -47,3 +53,8 @@ fig.update_layout(yaxis_tickformat='.0f',
 st.plotly_chart(fig)
 
 
+binary_output = BytesIO()
+df.to_excel(binary_output, index=False)
+st.download_button(label = 'Descargar excel',
+                    data = binary_output.getvalue(),
+                    file_name = 'datos.xlsx')
