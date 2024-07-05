@@ -9,7 +9,7 @@ st.title("Ejecución presupuestal | Enero - Mayo")
 df = pd.read_csv("ejecucion_enero_mayo.csv")
 
 df2 = df.copy()
-df2.loc[::, ['APR. INICIAL', 'PAGOS']] = df2.loc[::, ['APR. INICIAL', 'PAGOS']] / 1_000_000_000
+df2.loc[::, ['APR. INICIAL', 'COMPROMISO']] = df2.loc[::, ['APR. INICIAL', 'COMPROMISO']] / 1_000_000_000
 rubros = df2['DESCRIPCION'].unique().tolist()
 sectores = df2['Sector'].unique().tolist()
 
@@ -21,7 +21,7 @@ entidades = fil['Entidad'].unique().tolist()
 entidad = st.selectbox("Seleccione la entidad: ", entidades)
 
 t_ent = (fil[fil['Entidad'] == entidad]
-         .groupby(['Tipo de gasto', 'mes_num', 'mes'])['PAGOS']
+         .groupby(['Tipo de gasto', 'mes_num', 'mes'])['COMPROMISO']
          .sum()
          .reset_index()
          .sort_values(by='mes_num')
@@ -35,7 +35,7 @@ val = (df2[(df2['Tipo de gasto'] == tipo_gasto) & (df2['Entidad'] == entidad)]
        .sum()
        .unique()[0]
 )
-fig = px.line(piv_f, x='mes', y='PAGOS')
+fig = px.line(piv_f, x='mes', y='COMPROMISO')
 
 fig.add_hline(y=val, line=dict(color='red', dash='dash'))
 fig.update_layout(yaxis_tickformat='.0f',
@@ -43,7 +43,7 @@ fig.update_layout(yaxis_tickformat='.0f',
 st.plotly_chart(fig)
 
 
-piv_f['Porcentaje'] = ((piv_f['PAGOS'] / val) * 100).round(1)
+piv_f['Porcentaje'] = ((piv_f['COMPROMISO'] / val) * 100).round(1)
 
 fig = px.line(piv_f, x='mes', y='Porcentaje')
 
