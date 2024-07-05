@@ -9,7 +9,7 @@ st.title("Ejecución presupuestal | Enero - Mayo")
 df = pd.read_csv("ejecucion_enero_mayo.csv")
 
 df2 = df.copy()
-df2.loc[::, ['APR. INICIAL', 'COMPROMISO']] = df2.loc[::, ['APR. INICIAL', 'COMPROMISO']] / 1_000_000_000
+df2.loc[::, ['APR. VIGENTE', 'COMPROMISO']] = df2.loc[::, ['APR. VIGENTE', 'COMPROMISO']] / 1_000_000_000
 rubros = df2['DESCRIPCION'].unique().tolist()
 sectores = df2['Sector'].unique().tolist()
 
@@ -31,7 +31,7 @@ tipo_gasto = st.selectbox("Seleccione el tipo de gasto: ", t_ent['Tipo de gasto'
 
 piv_f = t_ent[t_ent['Tipo de gasto'] == tipo_gasto]
 val = (df2[(df2['Tipo de gasto'] == tipo_gasto) & (df2['Entidad'] == entidad)]
-       .groupby(['mes_num','mes'])['APR. INICIAL']
+       .groupby(['mes_num','mes'])['APR. VIGENTE']
        .sum()
        .unique()[0]
 )
