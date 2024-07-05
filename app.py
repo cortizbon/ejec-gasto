@@ -33,8 +33,11 @@ piv_f = t_ent[t_ent['Tipo de gasto'] == tipo_gasto]
 val = (df2[(df2['Tipo de gasto'] == tipo_gasto) & (df2['Entidad'] == entidad)]
        .groupby(['mes_num','mes'])['APR. VIGENTE']
        .sum()
-       .unique()[4]
+       .unique().tolist()
 )
+
+val = val[-1]
+
 fig = px.line(piv_f, x='mes', y='COMPROMISO')
 
 fig.add_hline(y=val, line=dict(color='red', dash='dash'))
